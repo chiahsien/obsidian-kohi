@@ -1,4 +1,6 @@
+/** Error thrown when Lua source cannot be parsed. */
 export class LuaParseError extends Error {
+	/** Character offset where the parse error occurred. */
 	readonly position: number;
 
 	constructor(message: string, position: number) {
@@ -8,6 +10,16 @@ export class LuaParseError extends Error {
 	}
 }
 
+/**
+ * Parse a KOReader Lua metadata file into a JavaScript object.
+ *
+ * Handles the `return { ... }` wrapper, string/number/boolean/nil literals,
+ * nested tables, comments, BOM, and long bracket strings (`[==[...]==]`).
+ * Tables with consecutive integer keys starting at 1 are auto-converted
+ * to arrays.
+ *
+ * @throws {LuaParseError} If the source is not valid KOReader Lua metadata.
+ */
 export function parseLuaTable(source: string): Record<string, unknown> {
 	let pos = 0;
 
@@ -33,6 +45,7 @@ export function parseLuaTable(source: string): Record<string, unknown> {
 		return isDigit(c) || (c >= "a" && c <= "f") || (c >= "A" && c <= "F");
 	}
 
+	// Detect Lua long bracket level: `[===[` → 3, `[[` → 0, not a bracket → -1
 	function longBracketLevel(): number {
 		if (source[pos] !== "[") return -1;
 		let i = pos + 1;
@@ -229,6 +242,7 @@ export function parseLuaTable(source: string): Record<string, unknown> {
 		error(`Unexpected character '${c}'`);
 	}
 
+	// If all keys are consecutive integers 1..N, return as JS array; otherwise as object
 	function parseTable(): Record<string, unknown> | unknown[] {
 		pos++;
 		const entries: { key: string; value: unknown }[] = [];

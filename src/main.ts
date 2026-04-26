@@ -8,6 +8,13 @@ import { renderNote } from "./note-generator";
 import { writeNote } from "./note-writer";
 import { openBookSelectModal } from "./multi-select-modal";
 
+/**
+ * KOHi plugin — imports KOReader highlights into the Obsidian vault.
+ *
+ * Commands:
+ * - **Import all highlights** — scan device, parse all `.sdr`, write notes
+ * - **Import selected highlights** — scan, then let user pick books via modal
+ */
 export default class KohiPlugin extends Plugin {
 	settings: PluginSettings = DEFAULT_SETTINGS;
 
@@ -29,6 +36,7 @@ export default class KohiPlugin extends Plugin {
 		this.addSettingTab(new KohiSettingTab(this.app, this));
 	}
 
+	/** Load settings from disk, merging with defaults. */
 	async loadSettings(): Promise<void> {
 		this.settings = Object.assign(
 			{},
@@ -37,10 +45,17 @@ export default class KohiPlugin extends Plugin {
 		);
 	}
 
+	/** Persist current settings to disk. */
 	async saveSettings(): Promise<void> {
 		await this.saveData(this.settings);
 	}
 
+	/**
+	 * Scan the mounted device and parse all `.sdr` directories.
+	 * Shows a live progress Notice during scanning/parsing.
+	 * @returns Parsed books and parse failures, or `null` if mount path
+	 *          is missing or no `.sdr` directories are found.
+	 */
 	private scanAndParse(): {
 		books: BookData[];
 		failures: string[];
@@ -79,6 +94,11 @@ export default class KohiPlugin extends Plugin {
 		return { books, failures };
 	}
 
+	/**
+	 * Render and write notes for the given books.
+	 * Shows a live progress Notice and a summary Notice on completion.
+	 * Template errors and write errors are tracked separately.
+	 */
 	private async writeBooks(
 		books: BookData[],
 		parseFailures: string[],

@@ -3,12 +3,14 @@ import type KohiPlugin from "./main";
 import type { PluginSettings } from "./types";
 import { DEFAULT_TEMPLATE } from "./note-generator";
 
+/** Default plugin settings. */
 export const DEFAULT_SETTINGS: PluginSettings = {
 	mountPath: "",
 	outputFolder: "KOReader Highlights",
 	noteTemplate: DEFAULT_TEMPLATE,
 };
 
+/** Plugin settings tab: mount path, output folder, and Nunjucks template editor. */
 export class KohiSettingTab extends PluginSettingTab {
 	plugin: KohiPlugin;
 

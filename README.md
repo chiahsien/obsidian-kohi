@@ -12,18 +12,49 @@ KOHi scans your KOReader device for `.sdr` metadata directories, parses the Lua-
 - **Clean filenames** — illegal characters are sanitized automatically
 - **Overwrite on re-import** — simple, predictable behavior
 
+## Installation
+
+### From community plugins (coming soon)
+
+1. Open Obsidian → Settings → Community plugins → Browse
+2. Search for **KOHi**
+3. Click Install, then Enable
+
+### Via BRAT
+
+1. Install the [BRAT](https://github.com/TfTHacker/obsidian42-brat) plugin
+2. BRAT settings → **Add Beta Plugin** → paste `chiahsien/obsidian-kohi`
+
+### Manual install
+
+1. Download `main.js`, `manifest.json`, and `styles.css` (if present) from the [latest release](https://github.com/chiahsien/obsidian-kohi/releases)
+2. Create a folder `<vault>/.obsidian/plugins/obsidian-kohi/`
+3. Copy the downloaded files into that folder
+4. Restart Obsidian → Settings → Community plugins → Enable **KOHi**
+
+### Build from source
+
+```sh
+git clone https://github.com/chiahsien/obsidian-kohi.git
+cd obsidian-kohi
+npm install
+npm run build
+```
+
+Then copy `main.js` and `manifest.json` into your vault's plugin folder as described above.
+
 ## Usage
 
 1. Connect your Kobo (or other KOReader device) via USB
-2. Open Obsidian → Command Palette
-3. Run **KOHi: Import all highlights** or **KOHi: Import selected highlights**
+2. Open Obsidian → Settings → KOHi → set **Mount path** (e.g. `/Volumes/KOBOeReader`)
+3. Command Palette → **KOHi: Import all highlights** or **KOHi: Import selected highlights**
 4. Notes appear in your configured output folder
 
 ## Settings
 
 | Setting | Description | Default |
 |---|---|---|
-| Mount path | Path to your KOReader device | — |
+| Mount path | Absolute path to your mounted KOReader device | — |
 | Output folder | Vault folder for generated notes | `KOReader Highlights` |
 | Note template | Nunjucks template for note output | See below |
 
@@ -53,7 +84,7 @@ Notes are generated using [Nunjucks](https://mozilla.github.io/nunjucks/) templa
 | `{{h.chapter}}` | Chapter name |
 | `{{h.page}}` | Page number |
 | `{{h.datetime}}` | Highlight timestamp |
-| `{{h.percent}}` | Reading progress |
+| `{{h.percent}}` | Reading progress (use `{{h.percent \| percent}}` for formatted output) |
 
 Two data structures are provided for flexibility:
 
@@ -105,7 +136,51 @@ imported: {{imported}}
 
 ## Development
 
-See [PLAN.md](PLAN.md) for architecture and implementation details.
+### Prerequisites
+
+- Node.js ≥ 18
+- npm
+
+### Setup
+
+```sh
+git clone https://github.com/chiahsien/obsidian-kohi.git
+cd obsidian-kohi
+npm install
+```
+
+### Commands
+
+| Command | Description |
+|---|---|
+| `npm run dev` | Start esbuild in watch mode |
+| `npm run build` | Type-check + production build |
+| `npm test` | Run tests once |
+| `npm run test:watch` | Run tests in watch mode |
+
+### Project structure
+
+```
+src/
+├── types.ts              # Shared interfaces (Book, Highlight, BookData, etc.)
+├── lua-parser.ts         # Recursive descent parser for KOReader Lua metadata
+├── scanner.ts            # Three-phase .sdr directory scanner
+├── book-parser.ts        # Metadata → BookData extraction + chapter grouping
+├── note-generator.ts     # Nunjucks template rendering
+├── note-writer.ts        # Vault file creation with filename sanitization
+├── multi-select-modal.ts # Fuzzy-search book picker modal
+├── settings.ts           # Plugin settings tab
+└── main.ts               # Plugin entry point + commands
+```
+
+### Hot-reload during development
+
+1. Build with `npm run dev` (watch mode)
+2. Symlink or copy the repo into your test vault:
+   ```sh
+   ln -s /path/to/obsidian-kohi /path/to/vault/.obsidian/plugins/obsidian-kohi
+   ```
+3. Enable the plugin in Obsidian → changes are picked up on reload (Cmd+R)
 
 ## License
 

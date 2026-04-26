@@ -1,6 +1,12 @@
 import { App, Modal, prepareFuzzySearch } from "obsidian";
 import type { BookData } from "./types";
 
+/**
+ * Open a modal for the user to pick books from a list.
+ *
+ * Supports fuzzy search, select all/clear, and per-book checkboxes.
+ * Resolves with the selected books, or an empty array if cancelled.
+ */
 export function openBookSelectModal(
 	app: App,
 	books: BookData[],

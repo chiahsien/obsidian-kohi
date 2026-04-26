@@ -1,6 +1,7 @@
 import { readdirSync, existsSync } from "fs";
 import { join, resolve } from "path";
 
+/** Directories excluded from recursive .sdr search (system/KOReader internals). */
 const EXCLUDE_DIRS = new Set([
 	".adds",
 	".kobo",
@@ -36,6 +37,14 @@ function findSdrDirs(dir: string, exclude: Set<string>): string[] {
 	return results;
 }
 
+/**
+ * Scan a mounted KOReader device for `.sdr` metadata directories.
+ *
+ * Three-phase scan, deduplicated by resolved path:
+ * 1. `koreader/docsettings` — centralized storage mode
+ * 2. `koreader/hashdocsettings` — hash-based storage mode
+ * 3. Recursive scan from mount root — per-book `.sdr` alongside the ebook file
+ */
 export function scan(mountPath: string): string[] {
 	const found = new Set<string>();
 

@@ -3,6 +3,16 @@ import { join } from "path";
 import { parseLuaTable } from "./lua-parser";
 import type { Book, Highlight, ChapterGroup, BookData } from "./types";
 
+/**
+ * Parse a `.sdr` directory into structured book data.
+ *
+ * Reads the first `metadata.*.lua` file found, extracts book properties
+ * (`custom_props` overrides `doc_props`), and groups highlights by chapter
+ * in first-appearance order.
+ *
+ * @returns Parsed book data, or `null` if the directory is unreadable or
+ *          contains no valid metadata.
+ */
 export function parseBookData(sdrPath: string): BookData | null {
 	let metadataFile: string | undefined;
 	try {
@@ -52,6 +62,7 @@ export function parseBookData(sdrPath: string): BookData | null {
 	return { book, highlights, chapters: groupByChapter(highlights) };
 }
 
+/** Group highlights by chapter name, preserving first-appearance order. */
 function groupByChapter(highlights: Highlight[]): ChapterGroup[] {
 	const groups: ChapterGroup[] = [];
 	const map = new Map<string, ChapterGroup>();

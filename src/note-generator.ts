@@ -8,6 +8,7 @@ env.addFilter("percent", (val: unknown): string => {
 	return (Number(val) * 100).toFixed(1) + "%";
 });
 
+/** Default Nunjucks template: frontmatter + chapter-grouped blockquote highlights. */
 export const DEFAULT_TEMPLATE = `---
 title: "{{ title }}"
 author: "{{ author }}"
@@ -34,6 +35,15 @@ imported: {{ imported }}
 {%- endfor %}
 `;
 
+/**
+ * Render a book's highlights into a Markdown note using a Nunjucks template.
+ *
+ * Template variables: `title`, `author`, `language`, `pages`, `keywords`,
+ * `imported`, `highlights` (flat), `chapters` (grouped).
+ * Custom filter: `percent` — converts decimal to `"7.4%"` format.
+ *
+ * Post-processing collapses 3+ consecutive newlines and trims.
+ */
 export function renderNote(
 	data: BookData,
 	template: string,
