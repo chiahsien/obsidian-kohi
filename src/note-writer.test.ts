@@ -37,4 +37,16 @@ describe("sanitizeFilename", () => {
 	it("handles all-illegal input", () => {
 		expect(sanitizeFilename('/:*?"<>|')).toBe("--------");
 	});
+
+	it("returns Untitled for empty string", () => {
+		expect(sanitizeFilename("")).toBe("Untitled");
+	});
+
+	it("returns Untitled for all dots", () => {
+		expect(sanitizeFilename("...")).toBe("Untitled");
+	});
+
+	it("returns Untitled for all whitespace", () => {
+		expect(sanitizeFilename("   ")).toBe("Untitled");
+	});
 });

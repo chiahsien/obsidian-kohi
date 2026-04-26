@@ -1,14 +1,31 @@
-import { App, TFile, normalizePath } from "obsidian";
+import { App, TFile, TFolder, normalizePath } from "obsidian";
 import type { Book } from "./types";
 
 export function sanitizeFilename(name: string): string {
-	return name
-		.replace(/[/\\:*?"<>|]/g, "-")
-		.replace(/\s+/g, " ")
-		.replace(/^\.+/, "")
-		.replace(/\.+$/, "")
-		.trim()
-		.slice(0, 200);
+	return (
+		name
+			.replace(/[/\\:*?"<>|]/g, "-")
+			.replace(/\s+/g, " ")
+			.replace(/^\.+/, "")
+			.replace(/\.+$/, "")
+			.trim()
+			.slice(0, 200) || "Untitled"
+	);
+}
+
+async function ensureFolder(app: App, folderPath: string): Promise<void> {
+	const normalized = normalizePath(folderPath);
+	if (app.vault.getAbstractFileByPath(normalized) instanceof TFolder) return;
+
+	const parts = normalized.split("/");
+	let current = "";
+	for (const part of parts) {
+		current = current ? `${current}/${part}` : part;
+		const existing = app.vault.getAbstractFileByPath(current);
+		if (!existing) {
+			await app.vault.createFolder(current);
+		}
+	}
 }
 
 export async function writeNote(
@@ -24,10 +41,7 @@ export async function writeNote(
 	if (existing instanceof TFile) {
 		await app.vault.modify(existing, content);
 	} else {
-		const folderPath = normalizePath(outputFolder);
-		if (!app.vault.getAbstractFileByPath(folderPath)) {
-			await app.vault.createFolder(folderPath);
-		}
+		await ensureFolder(app, outputFolder);
 		await app.vault.create(path, content);
 	}
 }

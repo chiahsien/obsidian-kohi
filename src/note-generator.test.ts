@@ -116,4 +116,95 @@ describe("renderNote", () => {
 		const d = data({});
 		expect(renderNote(d, "a\n\n\n\n\nb", "")).toBe("a\n\nb\n");
 	});
+
+	describe("default template output quality", () => {
+		it("produces clean output with full data", () => {
+			const d = data({
+				book: {
+					title: "Thinking, Fast and Slow",
+					author: "Daniel Kahneman",
+					language: "en",
+					pages: 499,
+					keywords: "psychology",
+				},
+				chapters: [
+					{
+						name: "Part I: Two Systems",
+						highlights: [
+							{
+								text: "A reliable way to make people believe in falsehoods is frequent repetition.",
+								note: "Availability heuristic",
+								chapter: "Part I: Two Systems",
+								page: 62,
+								datetime: "2024-03-15 10:30:00",
+								percent: 0.124,
+							},
+							{
+								text: "Nothing in life is as important as you think it is.",
+								chapter: "Part I: Two Systems",
+								page: 71,
+							},
+						],
+					},
+					{
+						name: "Part II: Heuristics and Biases",
+						highlights: [
+							{
+								text: "We are pattern seekers.",
+								chapter: "Part II: Heuristics and Biases",
+								page: 115,
+							},
+						],
+					},
+				],
+				highlights: [],
+			});
+
+			const result = renderNote(d, DEFAULT_TEMPLATE, "2024-06-01");
+
+			// frontmatter is clean
+			expect(result).toMatch(/^---\n/);
+			expect(result).toMatch(/\n---\n/);
+			expect(result).toContain('title: "Thinking, Fast and Slow"');
+			expect(result).toContain('author: "Daniel Kahneman"');
+			expect(result).toContain("language: en");
+			expect(result).toContain("pages: 499");
+			expect(result).toContain("imported: 2024-06-01");
+
+			// chapter headings present
+			expect(result).toContain("## Part I: Two Systems");
+			expect(result).toContain("## Part II: Heuristics and Biases");
+
+			// highlights as blockquotes
+			expect(result).toContain(
+				"> A reliable way to make people believe in falsehoods is frequent repetition.",
+			);
+			expect(result).toContain("**Note:** Availability heuristic");
+			expect(result).toContain(
+				"> Nothing in life is as important as you think it is.",
+			);
+			expect(result).toContain("> We are pattern seekers.");
+
+			// no triple+ blank lines
+			expect(result).not.toMatch(/\n{3,}/);
+
+			// ends with single newline
+			expect(result).toMatch(/[^\n]\n$/);
+		});
+
+		it("handles book with no chapters gracefully", () => {
+			const d = data({
+				chapters: [
+					{
+						name: "",
+						highlights: [{ text: "Standalone highlight" }],
+					},
+				],
+			});
+			const result = renderNote(d, DEFAULT_TEMPLATE, "2024-01-01");
+			expect(result).toContain("> Standalone highlight");
+			expect(result).not.toContain("## ");
+			expect(result).not.toMatch(/\n{3,}/);
+		});
+	});
 });

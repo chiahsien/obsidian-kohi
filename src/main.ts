@@ -50,8 +50,11 @@ export default class KohiPlugin extends Plugin {
 			return null;
 		}
 
+		const progress = new Notice("KOHi: Scanning…", 0);
+
 		const sdrPaths = scan(this.settings.mountPath);
 		if (sdrPaths.length === 0) {
+			progress.hide();
 			new Notice("KOHi: No .sdr directories found");
 			return null;
 		}
@@ -59,16 +62,20 @@ export default class KohiPlugin extends Plugin {
 		const books: BookData[] = [];
 		const failures: string[] = [];
 
-		for (const sdrPath of sdrPaths) {
-			const bookData = parseBookData(sdrPath);
+		for (let i = 0; i < sdrPaths.length; i++) {
+			progress.setMessage(
+				`KOHi: Parsing ${i + 1}/${sdrPaths.length}…`,
+			);
+			const bookData = parseBookData(sdrPaths[i]);
 			if (!bookData) {
-				failures.push(`${basename(sdrPath)} (parse error)`);
+				failures.push(`${basename(sdrPaths[i])} (parse error)`);
 				continue;
 			}
 			if (bookData.highlights.length === 0) continue;
 			books.push(bookData);
 		}
 
+		progress.hide();
 		return { books, failures };
 	}
 
@@ -79,14 +86,24 @@ export default class KohiPlugin extends Plugin {
 		const importDate = new Date().toISOString().slice(0, 10);
 		let success = 0;
 		const failures = [...parseFailures];
+		const progress = new Notice(`KOHi: Importing 0/${books.length}…`, 0);
 
 		for (const bookData of books) {
+			progress.setMessage(
+				`KOHi: Importing ${success + 1}/${books.length}…`,
+			);
+			let content: string;
 			try {
-				const content = renderNote(
+				content = renderNote(
 					bookData,
 					this.settings.noteTemplate,
 					importDate,
 				);
+			} catch {
+				failures.push(`${bookData.book.title} (template error)`);
+				continue;
+			}
+			try {
 				await writeNote(
 					this.app,
 					this.settings.outputFolder,
@@ -98,6 +115,8 @@ export default class KohiPlugin extends Plugin {
 				failures.push(`${bookData.book.title} (write error)`);
 			}
 		}
+
+		progress.hide();
 
 		if (failures.length === 0) {
 			new Notice(
