@@ -1,0 +1,31 @@
+{
+	"name": "obsidian-kohi",
+	"version": "0.1.0",
+	"description": "Import KOReader highlights into Obsidian",
+	"main": "main.js",
+	"type": "module",
+	"scripts": {
+		"dev": "node esbuild.config.mjs",
+		"build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
+		"test": "vitest run",
+		"test:watch": "vitest"
+	},
+	"keywords": [
+		"obsidian",
+		"koreader",
+		"highlights"
+	],
+	"license": "MIT",
+	"dependencies": {
+		"nunjucks": "^3.2.4",
+		"obsidian": "latest"
+	},
+	"devDependencies": {
+		"@types/node": "^22.0.0",
+		"@types/nunjucks": "^3.2.6",
+		"esbuild": "0.25.5",
+		"tslib": "2.4.0",
+		"typescript": "^5.8.3",
+		"vitest": "^3.2.1"
+	}
+}
