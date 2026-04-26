@@ -78,12 +78,13 @@ export default class KohiPlugin extends Plugin {
 		const failures: string[] = [];
 
 		for (let i = 0; i < sdrPaths.length; i++) {
+			const sdrPath = sdrPaths[i]!;
 			progress.setMessage(
 				`KOHi: Parsing ${i + 1}/${sdrPaths.length}…`,
 			);
-			const bookData = parseBookData(sdrPaths[i]);
+			const bookData = parseBookData(sdrPath);
 			if (!bookData) {
-				failures.push(`${basename(sdrPaths[i])} (parse error)`);
+				failures.push(`${basename(sdrPath)} (parse error)`);
 				continue;
 			}
 			if (bookData.highlights.length === 0) continue;

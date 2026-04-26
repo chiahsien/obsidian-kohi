@@ -3,7 +3,6 @@ import { join, resolve } from "path";
 
 /** Directories excluded from recursive .sdr search (system/KOReader internals). */
 const EXCLUDE_DIRS = new Set([
-	".adds",
 	".kobo",
 	".kobo-images",
 	"koreader",
@@ -16,6 +15,16 @@ const EXCLUDE_DIRS = new Set([
 	"$Recycle.Bin",
 	"System Volume Information",
 ]);
+
+// KOReader installation prefixes vary by device:
+// - Kobo: .adds/koreader/
+// - PocketBook: applications/koreader/
+// - Kindle / generic: koreader/
+const KOREADER_PREFIXES = [
+	"koreader",
+	join(".adds", "koreader"),
+	join("applications", "koreader"),
+];
 
 function findSdrDirs(dir: string, exclude: Set<string>): string[] {
 	const results: string[] = [];
@@ -40,22 +49,25 @@ function findSdrDirs(dir: string, exclude: Set<string>): string[] {
 /**
  * Scan a mounted KOReader device for `.sdr` metadata directories.
  *
- * Three-phase scan, deduplicated by resolved path:
- * 1. `koreader/docsettings` — centralized storage mode
- * 2. `koreader/hashdocsettings` — hash-based storage mode
+ * Three-phase scan per KOReader prefix, deduplicated by resolved path:
+ * 1. `{prefix}/docsettings` — centralized storage mode
+ * 2. `{prefix}/hashdocsettings` — hash-based storage mode
  * 3. Recursive scan from mount root — per-book `.sdr` alongside the ebook file
  */
 export function scan(mountPath: string): string[] {
 	const found = new Set<string>();
 
-	const docsettings = join(mountPath, "koreader", "docsettings");
-	if (existsSync(docsettings)) {
-		for (const p of findSdrDirs(docsettings, new Set())) found.add(p);
-	}
+	for (const prefix of KOREADER_PREFIXES) {
+		const docsettings = join(mountPath, prefix, "docsettings");
+		if (existsSync(docsettings)) {
+			for (const p of findSdrDirs(docsettings, new Set())) found.add(p);
+		}
 
-	const hashdocsettings = join(mountPath, "koreader", "hashdocsettings");
-	if (existsSync(hashdocsettings)) {
-		for (const p of findSdrDirs(hashdocsettings, new Set())) found.add(p);
+		const hashdocsettings = join(mountPath, prefix, "hashdocsettings");
+		if (existsSync(hashdocsettings)) {
+			for (const p of findSdrDirs(hashdocsettings, new Set()))
+				found.add(p);
+		}
 	}
 
 	for (const p of findSdrDirs(mountPath, EXCLUDE_DIRS)) found.add(p);
