@@ -96,7 +96,7 @@ describe("renderNote", () => {
 			expect(r).toContain("## Chapter 1");
 			expect(r).toContain("> First highlight");
 			expect(r).toContain("> Second");
-			expect(r).toContain("**Note:** my note");
+			expect(r).toContain("> [!note]\n> my note");
 		});
 
 		it("skips chapter heading for unnamed group", () => {
@@ -215,7 +215,7 @@ describe("renderNote", () => {
 			expect(result).toContain(
 				"> A reliable way to make people believe in falsehoods is frequent repetition.",
 			);
-			expect(result).toContain("**Note:** Availability heuristic");
+			expect(result).toContain("> [!note]\n> Availability heuristic");
 			expect(result).toContain(
 				"> Nothing in life is as important as you think it is.",
 			);

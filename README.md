@@ -119,7 +119,8 @@ imported: {{imported}}
 > {{h.text}}
 {% if h.note %}
 
-**Note:** {{h.note}}
+> [!note]
+> {{h.note}}
 {% endif %}
 
 {% endfor %}
@@ -142,10 +143,15 @@ imported: {{imported}}
 ---
 {% endif %}
 {% for h in highlights %}
-> {{h.text}} (p.{{h.page}})
+> {{h.text}}
+{% if h.page %}
+>
+> — p.{{h.page}}
+{% endif %}
 {% if h.note %}
 
-**Note:** {{h.note}}
+> [!note]
+> {{h.note}}
 {% endif %}
 
 {% endfor %}

@@ -41,7 +41,8 @@ imported: {{ imported }}
 {% for h in chapter.highlights %}
 > {{ h.text }}
 {% if h.note %}
-**Note:** {{ h.note }}
+> [!note]
+> {{ h.note }}
 {% endif %}
 {% endfor %}
 {%- endfor %}
@@ -72,9 +73,14 @@ imported: {{ imported }}
 
 {% endif -%}
 {% for h in highlights %}
-> {{ h.text }} (p.{{ h.page }})
+> {{ h.text }}
+{%- if h.page %}
+>
+> — p.{{ h.page }}
+{%- endif %}
 {% if h.note %}
-**Note:** {{ h.note }}
+> [!note]
+> {{ h.note }}
 {% endif %}
 {% endfor %}
 `;
