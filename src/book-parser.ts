@@ -42,6 +42,11 @@ export function parseBookData(sdrPath: string): BookData | null {
 		language: optStr(customProps["language"] ?? docProps["language"]),
 		pages: optNum(docProps["pages"]),
 		keywords: optStr(customProps["keywords"] ?? docProps["keywords"]),
+		description: optStr(docProps["description"]),
+		series: optStr(customProps["series"] ?? docProps["series"]),
+		seriesIndex: optNum(
+			customProps["series_index"] ?? docProps["series_index"],
+		),
 		filePath: sdrPath,
 	};
 

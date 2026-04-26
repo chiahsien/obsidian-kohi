@@ -10,6 +10,12 @@ export interface Book {
 	pages?: number;
 	/** Keywords or tags. */
 	keywords?: string;
+	/** Book description / summary (raw HTML from EPUB metadata). */
+	description?: string;
+	/** Series name. */
+	series?: string;
+	/** Position within the series. */
+	seriesIndex?: number;
 	/** Absolute path to the source `.sdr` directory. */
 	filePath: string;
 }

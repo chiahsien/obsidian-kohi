@@ -15,11 +15,23 @@ author: "{{ author }}"
 {%- if language %}
 language: {{ language }}
 {%- endif %}
+{%- if series %}
+series: "{{ series }}"
+{%- endif %}
+{%- if seriesIndex %}
+series_index: {{ seriesIndex }}
+{%- endif %}
 {%- if pages %}
 pages: {{ pages }}
 {%- endif %}
 imported: {{ imported }}
 ---
+{% if description %}
+{{ description }}
+
+---
+
+{% endif -%}
 {% for chapter in chapters %}
 {%- if chapter.name %}
 
@@ -35,11 +47,44 @@ imported: {{ imported }}
 {%- endfor %}
 `;
 
+/** Alternative Nunjucks template: frontmatter + flat highlight list without chapter grouping. */
+export const FLAT_TEMPLATE = `---
+title: "{{ title }}"
+author: "{{ author }}"
+{%- if language %}
+language: {{ language }}
+{%- endif %}
+{%- if series %}
+series: "{{ series }}"
+{%- endif %}
+{%- if seriesIndex %}
+series_index: {{ seriesIndex }}
+{%- endif %}
+{%- if pages %}
+pages: {{ pages }}
+{%- endif %}
+imported: {{ imported }}
+---
+{% if description %}
+{{ description }}
+
+---
+
+{% endif -%}
+{% for h in highlights %}
+> {{ h.text }} (p.{{ h.page }})
+{% if h.note %}
+**Note:** {{ h.note }}
+{% endif %}
+{% endfor %}
+`;
+
 /**
  * Render a book's highlights into a Markdown note using a Nunjucks template.
  *
  * Template variables: `title`, `author`, `language`, `pages`, `keywords`,
- * `imported`, `highlights` (flat), `chapters` (grouped).
+ * `description`, `series`, `seriesIndex`, `imported`, `highlights` (flat),
+ * `chapters` (grouped).
  * Custom filter: `percent` — converts decimal to `"7.4%"` format.
  *
  * Post-processing collapses 3+ consecutive newlines and trims.
@@ -55,6 +100,9 @@ export function renderNote(
 		language: data.book.language,
 		pages: data.book.pages,
 		keywords: data.book.keywords,
+		description: data.book.description,
+		series: data.book.series,
+		seriesIndex: data.book.seriesIndex,
 		imported: importDate,
 		highlights: data.highlights,
 		chapters: data.chapters,

@@ -27,7 +27,7 @@ KOHi scans your KOReader device for `.sdr` metadata directories, parses the Lua-
 
 ### Manual install
 
-1. Download `main.js`, `manifest.json`, and `styles.css` (if present) from the [latest release](https://github.com/chiahsien/obsidian-kohi/releases)
+1. Download `main.js` and `manifest.json` from the [latest release](https://github.com/chiahsien/obsidian-kohi/releases)
 2. Create a folder `<vault>/.obsidian/plugins/obsidian-kohi/`
 3. Copy the downloaded files into that folder
 4. Restart Obsidian → Settings → Community plugins → Enable **KOHi**
@@ -73,6 +73,9 @@ Notes are generated using [Nunjucks](https://mozilla.github.io/nunjucks/) templa
 | `{{language}}` | Language code |
 | `{{pages}}` | Total pages |
 | `{{keywords}}` | Keywords / tags |
+| `{{description}}` | Book description (raw HTML from EPUB) |
+| `{{series}}` | Series name |
+| `{{seriesIndex}}` | Position in series |
 | `{{imported}}` | Import date |
 
 **Highlight level** (within loops):
@@ -98,9 +101,16 @@ Two data structures are provided for flexibility:
 title: "{{title}}"
 author: "{{author}}"
 {% if language %}language: {{language}}{% endif %}
+{% if series %}series: "{{series}}"{% endif %}
+{% if seriesIndex %}series_index: {{seriesIndex}}{% endif %}
 {% if pages %}pages: {{pages}}{% endif %}
 imported: {{imported}}
 ---
+{% if description %}
+{{description}}
+
+---
+{% endif %}
 {% for chapter in chapters %}
 {% if chapter.name %}
 ## {{chapter.name}}
@@ -122,8 +132,15 @@ imported: {{imported}}
 ---
 title: "{{title}}"
 author: "{{author}}"
+{% if series %}series: "{{series}}"{% endif %}
+{% if seriesIndex %}series_index: {{seriesIndex}}{% endif %}
 imported: {{imported}}
 ---
+{% if description %}
+{{description}}
+
+---
+{% endif %}
 {% for h in highlights %}
 > {{h.text}} (p.{{h.page}})
 {% if h.note %}

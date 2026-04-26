@@ -170,4 +170,52 @@ describe("parseBookData", () => {
 		expect(r.book.title).toBe("Unknown");
 		expect(r.book.author).toBe("Unknown");
 	});
+
+	it("extracts description with raw HTML preserved", () => {
+		const p = sdr(
+			"test.epub.sdr",
+			`return {
+			["doc_props"] = {
+				["title"] = "T",
+				["authors"] = "A",
+				["description"] = "<div><p>A thrilling story.</p></div>",
+			},
+			["annotations"] = {},
+		}`,
+		);
+		const r = parseBookData(p)!;
+		expect(r.book.description).toBe("<div><p>A thrilling story.</p></div>");
+	});
+
+	it("extracts series and seriesIndex", () => {
+		const p = sdr(
+			"test.epub.sdr",
+			`return {
+			["doc_props"] = {
+				["title"] = "T",
+				["authors"] = "A",
+				["series"] = "Murder Maid",
+				["series_index"] = 3,
+			},
+			["annotations"] = {},
+		}`,
+		);
+		const r = parseBookData(p)!;
+		expect(r.book.series).toBe("Murder Maid");
+		expect(r.book.seriesIndex).toBe(3);
+	});
+
+	it("omits description/series/seriesIndex when absent", () => {
+		const p = sdr(
+			"test.epub.sdr",
+			`return {
+			["doc_props"] = { ["title"] = "T", ["authors"] = "A" },
+			["annotations"] = {},
+		}`,
+		);
+		const r = parseBookData(p)!;
+		expect(r.book.description).toBeUndefined();
+		expect(r.book.series).toBeUndefined();
+		expect(r.book.seriesIndex).toBeUndefined();
+	});
 });

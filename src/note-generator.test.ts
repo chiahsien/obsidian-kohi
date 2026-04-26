@@ -42,6 +42,33 @@ describe("renderNote", () => {
 			const r = renderNote(d, DEFAULT_TEMPLATE, "2024-01-15");
 			expect(r).not.toContain("language:");
 			expect(r).not.toContain("pages:");
+			expect(r).not.toContain("series:");
+			expect(r).not.toContain("series_index:");
+		});
+
+		it("renders series in frontmatter when present", () => {
+			const d = data({
+				book: { title: "T", author: "A", series: "Murder Maid", seriesIndex: 3 },
+			});
+			const r = renderNote(d, DEFAULT_TEMPLATE, "2024-01-15");
+			expect(r).toContain('series: "Murder Maid"');
+			expect(r).toContain("series_index: 3");
+		});
+
+		it("renders description after frontmatter with separator", () => {
+			const d = data({
+				book: { title: "T", author: "A", description: "<p>A thrilling story.</p>" },
+			});
+			const r = renderNote(d, DEFAULT_TEMPLATE, "2024-01-15");
+			expect(r).toContain("---\n\n<p>A thrilling story.</p>\n\n---");
+		});
+
+		it("omits description block when absent", () => {
+			const d = data({ book: { title: "T", author: "A" } });
+			const r = renderNote(d, DEFAULT_TEMPLATE, "2024-01-15");
+			const afterFrontmatter = r.split("---\n").slice(2).join("---\n");
+			expect(afterFrontmatter).not.toContain("undefined");
+			expect(afterFrontmatter).not.toContain("null");
 		});
 
 		it("renders chapter headings and highlights", () => {

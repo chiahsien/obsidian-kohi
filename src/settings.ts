@@ -1,7 +1,7 @@
 import { App, PluginSettingTab, Setting } from "obsidian";
 import type KohiPlugin from "./main";
 import type { PluginSettings } from "./types";
-import { DEFAULT_TEMPLATE } from "./note-generator";
+import { DEFAULT_TEMPLATE, FLAT_TEMPLATE } from "./note-generator";
 
 /** Default plugin settings. */
 export const DEFAULT_SETTINGS: PluginSettings = {
@@ -50,6 +50,58 @@ export class KohiSettingTab extends PluginSettingTab {
 			);
 
 		new Setting(containerEl)
+			.setName("Template presets")
+			.setDesc("Load a built-in template (overwrites current template)")
+			.addButton((btn) =>
+				btn.setButtonText("Grouped by chapter").onClick(async () => {
+					this.plugin.settings.noteTemplate = DEFAULT_TEMPLATE;
+					await this.plugin.saveSettings();
+					this.display();
+				}),
+			)
+			.addButton((btn) =>
+				btn.setButtonText("Flat list").onClick(async () => {
+					this.plugin.settings.noteTemplate = FLAT_TEMPLATE;
+					await this.plugin.saveSettings();
+					this.display();
+				}),
+			);
+
+		const refEl = containerEl.createEl("details");
+		refEl.createEl("summary", { text: "Available template variables" });
+		const table = refEl.createEl("table");
+		const rows: [string, string][] = [
+			["{{title}}", "Book title"],
+			["{{author}}", "Author name"],
+			["{{language}}", "Language code"],
+			["{{pages}}", "Total pages"],
+			["{{keywords}}", "Keywords / tags"],
+			["{{description}}", "Book description (raw HTML)"],
+			["{{series}}", "Series name"],
+			["{{seriesIndex}}", "Position in series"],
+			["{{imported}}", "Import date (YYYY-MM-DD)"],
+			["{{h.text}}", "Highlighted text"],
+			["{{h.note}}", "User note"],
+			["{{h.chapter}}", "Chapter name"],
+			["{{h.page}}", "Page number"],
+			["{{h.datetime}}", "Highlight timestamp"],
+			["{{h.percent}}", "Reading progress (decimal)"],
+			["{{h.percent | percent}}", "Reading progress (e.g. 7.4%)"],
+		];
+		for (const [variable, desc] of rows) {
+			const tr = table.createEl("tr");
+			tr.createEl("td", { text: variable }).style.fontFamily =
+				"monospace";
+			tr.createEl("td", { text: desc });
+		}
+		const note = refEl.createEl("p");
+		note.style.fontSize = "0.85em";
+		note.style.color = "var(--text-muted)";
+		note.setText(
+			"Use highlights for a flat list, or chapters (each with .name and .highlights) for grouped output.",
+		);
+
+		new Setting(containerEl)
 			.setName("Note template")
 			.setDesc("Nunjucks template for note output")
 			.addTextArea((text) => {
@@ -64,15 +116,5 @@ export class KohiSettingTab extends PluginSettingTab {
 					},
 				);
 			});
-
-		new Setting(containerEl).addButton((button) =>
-			button.setButtonText("Reset template to default").onClick(
-				async () => {
-					this.plugin.settings.noteTemplate = DEFAULT_TEMPLATE;
-					await this.plugin.saveSettings();
-					this.display();
-				},
-			),
-		);
 	}
 }
