@@ -18,10 +18,10 @@ language: {{ language }}
 {%- if series %}
 series: "{{ series }}"
 {%- endif %}
-{%- if seriesIndex %}
+{%- if seriesIndex != null %}
 series_index: {{ seriesIndex }}
 {%- endif %}
-{%- if pages %}
+{%- if pages != null %}
 pages: {{ pages }}
 {%- endif %}
 imported: {{ imported }}
@@ -57,10 +57,10 @@ language: {{ language }}
 {%- if series %}
 series: "{{ series }}"
 {%- endif %}
-{%- if seriesIndex %}
+{%- if seriesIndex != null %}
 series_index: {{ seriesIndex }}
 {%- endif %}
-{%- if pages %}
+{%- if pages != null %}
 pages: {{ pages }}
 {%- endif %}
 imported: {{ imported }}

@@ -102,8 +102,8 @@ title: "{{title}}"
 author: "{{author}}"
 {% if language %}language: {{language}}{% endif %}
 {% if series %}series: "{{series}}"{% endif %}
-{% if seriesIndex %}series_index: {{seriesIndex}}{% endif %}
-{% if pages %}pages: {{pages}}{% endif %}
+{% if seriesIndex != null %}series_index: {{seriesIndex}}{% endif %}
+{% if pages != null %}pages: {{pages}}{% endif %}
 imported: {{imported}}
 ---
 {% if description %}
@@ -133,7 +133,7 @@ imported: {{imported}}
 title: "{{title}}"
 author: "{{author}}"
 {% if series %}series: "{{series}}"{% endif %}
-{% if seriesIndex %}series_index: {{seriesIndex}}{% endif %}
+{% if seriesIndex != null %}series_index: {{seriesIndex}}{% endif %}
 imported: {{imported}}
 ---
 {% if description %}
@@ -155,6 +155,7 @@ imported: {{imported}}
 
 ### Prerequisites
 
+- Obsidian ≥ 1.7.2
 - Node.js ≥ 18
 - npm
 

@@ -2,7 +2,7 @@
 	"id": "obsidian-kohi",
 	"name": "KOHi",
 	"version": "0.1.0",
-	"minAppVersion": "1.0.0",
+	"minAppVersion": "1.7.2",
 	"description": "Import KOReader highlights into Obsidian",
 	"author": "",
 	"isDesktopOnly": true

@@ -55,6 +55,15 @@ describe("renderNote", () => {
 			expect(r).toContain("series_index: 3");
 		});
 
+		it("renders seriesIndex and pages when value is 0", () => {
+			const d = data({
+				book: { title: "T", author: "A", seriesIndex: 0, pages: 0 },
+			});
+			const r = renderNote(d, DEFAULT_TEMPLATE, "2024-01-15");
+			expect(r).toContain("series_index: 0");
+			expect(r).toContain("pages: 0");
+		});
+
 		it("renders description after frontmatter with separator", () => {
 			const d = data({
 				book: { title: "T", author: "A", description: "<p>A thrilling story.</p>" },
