@@ -22,7 +22,6 @@ class BookSelectModal extends Modal {
 	private resolve: (value: BookData[]) => void;
 	private query = "";
 	private listEl!: HTMLElement;
-	private selectedEl!: HTMLElement;
 	private countEl!: HTMLElement;
 
 	constructor(
@@ -52,9 +51,6 @@ class BookSelectModal extends Modal {
 			this.renderList();
 		});
 
-		this.selectedEl = contentEl.createDiv({ cls: "kohi-selected-list" });
-		this.selectedEl.style.marginBottom = "8px";
-
 		this.listEl = contentEl.createDiv({ cls: "kohi-book-list" });
 		this.listEl.style.maxHeight = "300px";
 		this.listEl.style.overflowY = "auto";
@@ -76,14 +72,14 @@ class BookSelectModal extends Modal {
 		});
 		selectAllBtn.addEventListener("click", () => {
 			for (const b of this.books) this.selected.add(b);
-			this.renderSelected();
+			this.updateCount();
 			this.renderList();
 		});
 
 		const clearBtn = buttons.createEl("button", { text: "Clear" });
 		clearBtn.addEventListener("click", () => {
 			this.selected.clear();
-			this.renderSelected();
+			this.updateCount();
 			this.renderList();
 		});
 
@@ -96,7 +92,7 @@ class BookSelectModal extends Modal {
 			this.resolve([...this.selected]);
 		});
 
-		this.renderSelected();
+		this.updateCount();
 		this.renderList();
 		searchInput.focus();
 	}
@@ -107,34 +103,8 @@ class BookSelectModal extends Modal {
 		}
 	}
 
-	private renderSelected(): void {
-		this.selectedEl.empty();
+	private updateCount(): void {
 		this.countEl.textContent = `${this.selected.size} / ${this.books.length} selected`;
-
-		if (this.selected.size === 0) return;
-
-		for (const b of this.selected) {
-			const tag = this.selectedEl.createSpan({ cls: "kohi-tag" });
-			tag.style.display = "inline-flex";
-			tag.style.alignItems = "center";
-			tag.style.gap = "4px";
-			tag.style.padding = "2px 8px";
-			tag.style.margin = "2px";
-			tag.style.borderRadius = "4px";
-			tag.style.backgroundColor = "var(--interactive-accent)";
-			tag.style.color = "var(--text-on-accent)";
-			tag.style.fontSize = "0.85em";
-			tag.textContent = b.book.title;
-
-			const removeBtn = tag.createSpan({ text: "×" });
-			removeBtn.style.cursor = "pointer";
-			removeBtn.style.marginLeft = "4px";
-			removeBtn.addEventListener("click", () => {
-				this.selected.delete(b);
-				this.renderSelected();
-				this.renderList();
-			});
-		}
 	}
 
 	private renderList(): void {
@@ -178,7 +148,7 @@ class BookSelectModal extends Modal {
 				} else {
 					this.selected.add(b);
 				}
-				this.renderSelected();
+				this.updateCount();
 				this.renderList();
 			});
 
@@ -188,7 +158,7 @@ class BookSelectModal extends Modal {
 				} else {
 					this.selected.delete(b);
 				}
-				this.renderSelected();
+				this.updateCount();
 				this.renderList();
 			});
 		}
