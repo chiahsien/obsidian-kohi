@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { sanitizeFilename } from "./note-writer";
+import { sanitizeFilename, renderFilename } from "./note-writer";
+import type { Book } from "./types";
 
 describe("sanitizeFilename", () => {
 	it("replaces illegal characters", () => {
@@ -48,5 +49,47 @@ describe("sanitizeFilename", () => {
 
 	it("returns Untitled for all whitespace", () => {
 		expect(sanitizeFilename("   ")).toBe("Untitled");
+	});
+});
+
+function book(overrides: Partial<Book> = {}): Book {
+	return {
+		title: "Alice's Adventures",
+		author: "Lewis Carroll",
+		filePath: "/tmp/test.sdr",
+		...overrides,
+	};
+}
+
+describe("renderFilename", () => {
+	it("renders title-only template", () => {
+		expect(renderFilename("{{title}}", book())).toBe(
+			"Alice's Adventures",
+		);
+	});
+
+	it("renders author-title template", () => {
+		expect(renderFilename("{{author}} - {{title}}", book())).toBe(
+			"Lewis Carroll - Alice's Adventures",
+		);
+	});
+
+	it("sanitizes rendered result", () => {
+		expect(
+			renderFilename("{{title}}", book({ title: 'A/B: "C"' })),
+		).toBe("A-B- -C-");
+	});
+
+	it("falls back to Untitled when template renders empty", () => {
+		expect(renderFilename("{{series}}", book())).toBe("Untitled");
+	});
+
+	it("handles series and seriesIndex", () => {
+		expect(
+			renderFilename(
+				"{{series}} {{seriesIndex}} - {{title}}",
+				book({ series: "Wonderland", seriesIndex: 1 }),
+			),
+		).toBe("Wonderland 1 - Alice's Adventures");
 	});
 });

@@ -64,4 +64,8 @@ export interface PluginSettings {
 	outputFolder: string;
 	/** Nunjucks template string for note rendering. */
 	noteTemplate: string;
+	/** Nunjucks template for the output filename (without extension). */
+	filenameTemplate: string;
+	/** Whether to overwrite existing notes on re-import. */
+	overwriteExisting: boolean;
 }

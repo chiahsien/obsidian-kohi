@@ -1,5 +1,8 @@
 import { App, TFile, TFolder, normalizePath } from "obsidian";
+import * as nunjucks from "nunjucks";
 import type { Book } from "./types";
+
+const env = new nunjucks.Environment(null, { autoescape: false });
 
 /**
  * Sanitize a string for use as a filename.
@@ -20,6 +23,11 @@ export function sanitizeFilename(name: string): string {
 	);
 }
 
+export function renderFilename(template: string, book: Book): string {
+	const raw = env.renderString(template, book);
+	return sanitizeFilename(raw);
+}
+
 /** Recursively create vault folders for a nested path (e.g. `"A/B/C"`). */
 async function ensureFolder(app: App, folderPath: string): Promise<void> {
 	const normalized = normalizePath(folderPath);
@@ -37,25 +45,29 @@ async function ensureFolder(app: App, folderPath: string): Promise<void> {
 }
 
 /**
- * Write (or overwrite) a book's note in the vault.
+ * Write a book's note in the vault.
  *
- * Creates the output folder if it doesn't exist. If a note with the same
- * sanitized filename already exists, it is overwritten via `vault.modify`.
+ * @returns `"written"` if the note was created/updated,
+ *          `"skipped"` if it already exists and `overwrite` is false.
  */
 export async function writeNote(
 	app: App,
 	outputFolder: string,
 	book: Book,
 	content: string,
-): Promise<void> {
-	const filename = sanitizeFilename(book.title);
+	filenameTemplate: string,
+	overwrite: boolean,
+): Promise<"written" | "skipped"> {
+	const filename = renderFilename(filenameTemplate, book);
 	const path = normalizePath(`${outputFolder}/${filename}.md`);
 
 	const existing = app.vault.getAbstractFileByPath(path);
 	if (existing instanceof TFile) {
+		if (!overwrite) return "skipped";
 		await app.vault.modify(existing, content);
 	} else {
 		await ensureFolder(app, outputFolder);
 		await app.vault.create(path, content);
 	}
+	return "written";
 }

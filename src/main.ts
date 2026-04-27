@@ -106,12 +106,13 @@ export default class KohiPlugin extends Plugin {
 	): Promise<void> {
 		const importDate = new Date().toISOString().slice(0, 10);
 		let success = 0;
+		let skipped = 0;
 		const failures = [...parseFailures];
 		const progress = new Notice(`KOHi: Importing 0/${books.length}…`, 0);
 
 		for (const bookData of books) {
 			progress.setMessage(
-				`KOHi: Importing ${success + 1}/${books.length}…`,
+				`KOHi: Importing ${success + skipped + 1}/${books.length}…`,
 			);
 			let content: string;
 			try {
@@ -125,13 +126,19 @@ export default class KohiPlugin extends Plugin {
 				continue;
 			}
 			try {
-				await writeNote(
+				const result = await writeNote(
 					this.app,
 					this.settings.outputFolder,
 					bookData.book,
 					content,
+					this.settings.filenameTemplate,
+					this.settings.overwriteExisting,
 				);
-				success++;
+				if (result === "skipped") {
+					skipped++;
+				} else {
+					success++;
+				}
 			} catch {
 				failures.push(`${bookData.book.title} (write error)`);
 			}
@@ -139,16 +146,18 @@ export default class KohiPlugin extends Plugin {
 
 		progress.hide();
 
+		const parts: string[] = [];
+		if (success > 0)
+			parts.push(`${success} imported`);
+		if (skipped > 0)
+			parts.push(`${skipped} skipped`);
+		if (failures.length > 0)
+			parts.push(`${failures.length} failed`);
+
 		if (failures.length === 0) {
-			new Notice(
-				`KOHi: Imported ${success} book${success !== 1 ? "s" : ""} successfully`,
-			);
-		} else if (success > 0) {
-			new Notice(
-				`KOHi: Imported ${success} book${success !== 1 ? "s" : ""}. ${failures.length} failed:\n${failures.join("\n")}`,
-			);
+			new Notice(`KOHi: ${parts.join(", ")}`);
 		} else {
-			new Notice(`KOHi: Import failed:\n${failures.join("\n")}`);
+			new Notice(`KOHi: ${parts.join(", ")}:\n${failures.join("\n")}`);
 		}
 	}
 

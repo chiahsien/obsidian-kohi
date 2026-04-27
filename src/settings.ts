@@ -8,6 +8,8 @@ export const DEFAULT_SETTINGS: PluginSettings = {
 	mountPath: "",
 	outputFolder: "KOReader Highlights",
 	noteTemplate: DEFAULT_TEMPLATE,
+	filenameTemplate: "{{title}}",
+	overwriteExisting: true,
 };
 
 /** Plugin settings tab: mount path, output folder, and Nunjucks template editor. */
@@ -45,6 +47,36 @@ export class KohiSettingTab extends PluginSettingTab {
 					.setValue(this.plugin.settings.outputFolder)
 					.onChange(async (value) => {
 						this.plugin.settings.outputFolder = value;
+						await this.plugin.saveSettings();
+					}),
+			);
+
+		new Setting(containerEl)
+			.setName("Filename template")
+			.setDesc(
+				"Nunjucks template for note filenames (without .md extension). Available: {{title}}, {{author}}, {{series}}, etc.",
+			)
+			.addText((text) =>
+				text
+					.setPlaceholder("{{title}}")
+					.setValue(this.plugin.settings.filenameTemplate)
+					.onChange(async (value) => {
+						this.plugin.settings.filenameTemplate =
+							value.trim() || "{{title}}";
+						await this.plugin.saveSettings();
+					}),
+			);
+
+		new Setting(containerEl)
+			.setName("Overwrite existing notes")
+			.setDesc(
+				"When enabled, re-importing a book overwrites the existing note. When disabled, existing notes are skipped.",
+			)
+			.addToggle((toggle) =>
+				toggle
+					.setValue(this.plugin.settings.overwriteExisting)
+					.onChange(async (value) => {
+						this.plugin.settings.overwriteExisting = value;
 						await this.plugin.saveSettings();
 					}),
 			);

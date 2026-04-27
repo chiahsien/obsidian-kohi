@@ -56,6 +56,8 @@ Then copy `main.js` and `manifest.json` into your vault's plugin folder as descr
 |---|---|---|
 | Mount path | Absolute path to your mounted KOReader device | — |
 | Output folder | Vault folder for generated notes | `KOReader Highlights` |
+| Filename template | Nunjucks template for note filenames (e.g. `{{author}} - {{title}}`) | `{{title}}` |
+| Overwrite existing | Whether to overwrite notes on re-import or skip them | On |
 | Note template | Nunjucks template for note output | See below |
 
 ## Template
