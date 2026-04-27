@@ -4,6 +4,8 @@ Import highlights and notes from [KOReader](https://koreader.rocks/) into your [
 
 KOHi scans your KOReader device for `.sdr` metadata directories, parses the Lua-serialized annotations, and generates one Markdown note per book — with full control over the output format via Nunjucks templates.
 
+![Settings](screenshot.png)
+
 ## Features
 
 - **Auto-detect all 3 KOReader storage modes** — book folder, `koreader/docsettings`, and `koreader/hashdocsettings`
@@ -11,37 +13,6 @@ KOHi scans your KOReader device for `.sdr` metadata directories, parses the Lua-
 - **Selective import** — import all books at once, or pick specific ones via fuzzy search
 - **Clean filenames** — illegal characters are sanitized automatically
 - **Overwrite on re-import** — simple, predictable behavior
-
-## Installation
-
-### From community plugins (coming soon)
-
-1. Open Obsidian → Settings → Community plugins → Browse
-2. Search for **KOHi**
-3. Click Install, then Enable
-
-### Via BRAT
-
-1. Install the [BRAT](https://github.com/TfTHacker/obsidian42-brat) plugin
-2. BRAT settings → **Add Beta Plugin** → paste `chiahsien/obsidian-kohi`
-
-### Manual install
-
-1. Download `main.js` and `manifest.json` from the [latest release](https://github.com/chiahsien/obsidian-kohi/releases)
-2. Create a folder `<vault>/.obsidian/plugins/obsidian-kohi/`
-3. Copy the downloaded files into that folder
-4. Restart Obsidian → Settings → Community plugins → Enable **KOHi**
-
-### Build from source
-
-```sh
-git clone https://github.com/chiahsien/obsidian-kohi.git
-cd obsidian-kohi
-npm install
-npm run build
-```
-
-Then copy `main.js` and `manifest.json` into your vault's plugin folder as described above.
 
 ## Usage
 
@@ -164,6 +135,37 @@ imported: {{imported}}
 {% endfor %}
 ```
 
+## Installation
+
+### From community plugins (coming soon)
+
+1. Open Obsidian → Settings → Community plugins → Browse
+2. Search for **KOHi**
+3. Click Install, then Enable
+
+### Via BRAT
+
+1. Install the [BRAT](https://github.com/TfTHacker/obsidian42-brat) plugin
+2. BRAT settings → **Add Beta Plugin** → paste `chiahsien/obsidian-kohi`
+
+### Manual install
+
+1. Download `main.js` and `manifest.json` from the [latest release](https://github.com/chiahsien/obsidian-kohi/releases)
+2. Create a folder `<vault>/.obsidian/plugins/obsidian-kohi/`
+3. Copy the downloaded files into that folder
+4. Restart Obsidian → Settings → Community plugins → Enable **KOHi**
+
+### Build from source
+
+```sh
+git clone https://github.com/chiahsien/obsidian-kohi.git
+cd obsidian-kohi
+npm install
+npm run build
+```
+
+Then copy `main.js` and `manifest.json` into your vault's plugin folder as described above.
+
 ## Development
 
 ### Prerequisites
@@ -216,3 +218,5 @@ src/
 ## License
 
 MIT
+
+<a href="https://www.buymeacoffee.com/chiahsien" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
