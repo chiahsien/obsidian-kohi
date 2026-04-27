@@ -132,22 +132,6 @@ describe("renderNote", () => {
 		});
 	});
 
-	describe("percent filter", () => {
-		it("formats decimal as percentage", () => {
-			const d = data({
-				highlights: [{ text: "H", percent: 0.074 }],
-			});
-			const tmpl = "{% for h in highlights %}{{ h.percent | percent }}{% endfor %}";
-			expect(renderNote(d, tmpl, "")).toContain("7.4%");
-		});
-
-		it("handles null/undefined", () => {
-			const d = data({ highlights: [{ text: "H" }] });
-			const tmpl = "{% for h in highlights %}[{{ h.percent | percent }}]{% endfor %}";
-			expect(renderNote(d, tmpl, "")).toContain("[]");
-		});
-	});
-
 	it("collapses excessive blank lines", () => {
 		const d = data({});
 		expect(renderNote(d, "a\n\n\n\n\nb", "")).toBe("a\n\nb\n");
@@ -173,7 +157,6 @@ describe("renderNote", () => {
 								chapter: "Part I: Two Systems",
 								page: 62,
 								datetime: "2024-03-15 10:30:00",
-								percent: 0.124,
 							},
 							{
 								text: "Nothing in life is as important as you think it is.",

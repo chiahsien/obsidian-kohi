@@ -32,8 +32,6 @@ export interface Highlight {
 	page?: number;
 	/** Timestamp when the highlight was created (ISO-ish from KOReader). */
 	datetime?: string;
-	/** Reading progress as a decimal in `[0, 1]`. */
-	percent?: number;
 }
 
 /** Group of highlights under the same chapter heading. */

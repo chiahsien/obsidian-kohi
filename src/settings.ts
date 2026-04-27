@@ -85,8 +85,6 @@ export class KohiSettingTab extends PluginSettingTab {
 			["{{h.chapter}}", "Chapter name"],
 			["{{h.page}}", "Page number"],
 			["{{h.datetime}}", "Highlight timestamp"],
-			["{{h.percent}}", "Reading progress (decimal)"],
-			["{{h.percent | percent}}", "Reading progress (e.g. 7.4%)"],
 		];
 		for (const [variable, desc] of rows) {
 			const tr = table.createEl("tr");

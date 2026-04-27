@@ -22,7 +22,7 @@ describe("parseBookData", () => {
 		return p;
 	}
 
-	it("extracts book metadata from doc_props", () => {
+	it("extracts book metadata from doc_props and stats", () => {
 		const p = sdr(
 			"Alice.epub.sdr",
 			`return {
@@ -30,6 +30,8 @@ describe("parseBookData", () => {
 				["title"] = "Alice's Adventures in Wonderland",
 				["authors"] = "Lewis Carroll",
 				["language"] = "en",
+			},
+			["stats"] = {
 				["pages"] = 107,
 			},
 			["annotations"] = {},
@@ -42,6 +44,18 @@ describe("parseBookData", () => {
 		expect(r!.book.language).toBe("en");
 		expect(r!.book.pages).toBe(107);
 		expect(r!.book.filePath).toBe(p);
+	});
+
+	it("falls back to doc_props.pages when stats missing", () => {
+		const p = sdr(
+			"test.pdf.sdr",
+			`return {
+			["doc_props"] = { ["title"] = "T", ["authors"] = "A", ["pages"] = 50 },
+			["annotations"] = {},
+		}`,
+		);
+		const r = parseBookData(p)!;
+		expect(r.book.pages).toBe(50);
 	});
 
 	it("custom_props overrides doc_props", () => {
@@ -66,16 +80,15 @@ describe("parseBookData", () => {
 			["annotations"] = {
 				[1] = {
 					["text"] = "First",
-					["notes"] = "My note",
+					["note"] = "My note",
 					["chapter"] = "Ch1",
-					["page"] = 10,
+					["pageno"] = 10,
 					["datetime"] = "2024-01-15 10:30:00",
-					["percent"] = 0.05,
 				},
 				[2] = {
 					["text"] = "Second",
 					["chapter"] = "Ch2",
-					["page"] = 20,
+					["pageno"] = 20,
 				},
 			},
 		}`,
@@ -86,7 +99,6 @@ describe("parseBookData", () => {
 		expect(r.highlights[0]!.note).toBe("My note");
 		expect(r.highlights[0]!.chapter).toBe("Ch1");
 		expect(r.highlights[0]!.page).toBe(10);
-		expect(r.highlights[0]!.percent).toBe(0.05);
 		expect(r.highlights[1]!.text).toBe("Second");
 	});
 
@@ -129,13 +141,13 @@ describe("parseBookData", () => {
 		expect(r.chapters[1]!.name).toBe("Ch1");
 	});
 
-	it("empty notes → undefined", () => {
+	it("empty note → undefined", () => {
 		const p = sdr(
 			"test.epub.sdr",
 			`return {
 			["doc_props"] = { ["title"] = "T", ["authors"] = "A" },
 			["annotations"] = {
-				[1] = { ["text"] = "H1", ["notes"] = "" },
+				[1] = { ["text"] = "H1", ["note"] = "" },
 			},
 		}`,
 		);

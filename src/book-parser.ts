@@ -35,12 +35,13 @@ export function parseBookData(sdrPath: string): BookData | null {
 
 	const docProps = (raw["doc_props"] as Record<string, unknown>) ?? {};
 	const customProps = (raw["custom_props"] as Record<string, unknown>) ?? {};
+	const stats = (raw["stats"] as Record<string, unknown>) ?? {};
 
 	const book: Book = {
 		title: str(customProps["title"] ?? docProps["title"], "Unknown"),
 		author: str(customProps["authors"] ?? docProps["authors"], "Unknown"),
 		language: optStr(customProps["language"] ?? docProps["language"]),
-		pages: optNum(docProps["pages"]),
+		pages: optNum(stats["pages"] ?? docProps["pages"]),
 		keywords: optStr(customProps["keywords"] ?? docProps["keywords"]),
 		description: optStr(docProps["description"]),
 		series: optStr(customProps["series"] ?? docProps["series"]),
@@ -57,11 +58,10 @@ export function parseBookData(sdrPath: string): BookData | null {
 
 	const highlights: Highlight[] = items.map((a) => ({
 		text: str(a["text"], ""),
-		note: optStr(a["notes"]),
+		note: optStr(a["note"]),
 		chapter: optStr(a["chapter"]),
-		page: optNum(a["page"]),
+		page: optNum(a["pageno"]),
 		datetime: optStr(a["datetime"]),
-		percent: optNum(a["percent"]),
 	}));
 
 	return { book, highlights, chapters: groupByChapter(highlights) };

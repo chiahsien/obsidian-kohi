@@ -87,7 +87,6 @@ Notes are generated using [Nunjucks](https://mozilla.github.io/nunjucks/) templa
 | `{{h.chapter}}` | Chapter name |
 | `{{h.page}}` | Page number |
 | `{{h.datetime}}` | Highlight timestamp |
-| `{{h.percent}}` | Reading progress (use `{{h.percent \| percent}}` for formatted output) |
 
 Two data structures are provided for flexibility:
 
@@ -117,6 +116,10 @@ imported: {{imported}}
 {% endif %}
 {% for h in chapter.highlights %}
 > {{h.text}}
+{% if h.page %}
+>
+> — p.{{h.page}}
+{% endif %}
 {% if h.note %}
 
 > [!note]

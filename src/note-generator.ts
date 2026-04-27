@@ -3,11 +3,6 @@ import type { BookData } from "./types";
 
 const env = new nunjucks.Environment(null, { autoescape: false });
 
-env.addFilter("percent", (val: unknown): string => {
-	if (val === null || val === undefined) return "";
-	return (Number(val) * 100).toFixed(1) + "%";
-});
-
 /** Default Nunjucks template: frontmatter + chapter-grouped blockquote highlights. */
 export const DEFAULT_TEMPLATE = `---
 title: "{{ title }}"
@@ -40,6 +35,10 @@ imported: {{ imported }}
 {% endif -%}
 {% for h in chapter.highlights %}
 > {{ h.text }}
+{%- if h.page %}
+>
+> — p.{{ h.page }}
+{%- endif %}
 {% if h.note %}
 > [!note]
 > {{ h.note }}
@@ -91,7 +90,6 @@ imported: {{ imported }}
  * Template variables: `title`, `author`, `language`, `pages`, `keywords`,
  * `description`, `series`, `seriesIndex`, `imported`, `highlights` (flat),
  * `chapters` (grouped).
- * Custom filter: `percent` — converts decimal to `"7.4%"` format.
  *
  * Post-processing collapses 3+ consecutive newlines and trims.
  */
