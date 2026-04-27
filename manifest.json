@@ -1,9 +1,11 @@
 {
-	"id": "obsidian-kohi",
+	"id": "kohi",
 	"name": "KOHi",
 	"version": "0.1.0",
 	"minAppVersion": "1.7.2",
-	"description": "Import KOReader highlights into Obsidian",
-	"author": "",
+	"description": "Import KOReader highlights and notes into your vault.",
+	"author": "Nelson",
+	"authorUrl": "https://github.com/chiahsien",
+	"fundingUrl": "https://www.buymeacoffee.com/chiahsien",
 	"isDesktopOnly": true
 }

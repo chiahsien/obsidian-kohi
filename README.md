@@ -151,7 +151,7 @@ imported: {{imported}}
 ### Manual install
 
 1. Download `main.js` and `manifest.json` from the [latest release](https://github.com/chiahsien/obsidian-kohi/releases)
-2. Create a folder `<vault>/.obsidian/plugins/obsidian-kohi/`
+2. Create a folder `<vault>/.obsidian/plugins/kohi/`
 3. Copy the downloaded files into that folder
 4. Restart Obsidian → Settings → Community plugins → Enable **KOHi**
 
@@ -211,7 +211,7 @@ src/
 1. Build with `npm run dev` (watch mode)
 2. Symlink or copy the repo into your test vault:
    ```sh
-   ln -s /path/to/obsidian-kohi /path/to/vault/.obsidian/plugins/obsidian-kohi
+   ln -s /path/to/obsidian-kohi /path/to/vault/.obsidian/plugins/kohi
    ```
 3. Enable the plugin in Obsidian → changes are picked up on reload (Cmd+R)
 
