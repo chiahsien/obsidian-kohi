@@ -87,6 +87,8 @@ Notes are generated using [Nunjucks](https://mozilla.github.io/nunjucks/) templa
 | `{{h.chapter}}` | Chapter name |
 | `{{h.page}}` | Page number |
 | `{{h.datetime}}` | Highlight timestamp |
+| `{{h.color}}` | Highlight color (e.g. `yellow`, `green`, `red`) |
+| `{{h.drawer}}` | Highlight style (`lighten`, `underscore`, `strikeout`, `invert`) |
 
 Two data structures are provided for flexibility:
 

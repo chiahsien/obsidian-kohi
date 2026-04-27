@@ -84,6 +84,8 @@ describe("parseBookData", () => {
 					["chapter"] = "Ch1",
 					["pageno"] = 10,
 					["datetime"] = "2024-01-15 10:30:00",
+					["color"] = "yellow",
+					["drawer"] = "lighten",
 				},
 				[2] = {
 					["text"] = "Second",
@@ -99,7 +101,11 @@ describe("parseBookData", () => {
 		expect(r.highlights[0]!.note).toBe("My note");
 		expect(r.highlights[0]!.chapter).toBe("Ch1");
 		expect(r.highlights[0]!.page).toBe(10);
+		expect(r.highlights[0]!.color).toBe("yellow");
+		expect(r.highlights[0]!.drawer).toBe("lighten");
 		expect(r.highlights[1]!.text).toBe("Second");
+		expect(r.highlights[1]!.color).toBeUndefined();
+		expect(r.highlights[1]!.drawer).toBeUndefined();
 	});
 
 	it("groups highlights by chapter in appearance order", () => {

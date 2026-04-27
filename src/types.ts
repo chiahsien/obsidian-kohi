@@ -32,6 +32,10 @@ export interface Highlight {
 	page?: number;
 	/** Timestamp when the highlight was created (ISO-ish from KOReader). */
 	datetime?: string;
+	/** Highlight color (e.g. `"yellow"`, `"green"`, `"red"`). */
+	color?: string;
+	/** Highlight style: `"lighten"`, `"underscore"`, `"strikeout"`, or `"invert"`. */
+	drawer?: string;
 }
 
 /** Group of highlights under the same chapter heading. */

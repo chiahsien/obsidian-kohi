@@ -62,6 +62,8 @@ export function parseBookData(sdrPath: string): BookData | null {
 		chapter: optStr(a["chapter"]),
 		page: optNum(a["pageno"]),
 		datetime: optStr(a["datetime"]),
+		color: optStr(a["color"]),
+		drawer: optStr(a["drawer"]),
 	}));
 
 	return { book, highlights, chapters: groupByChapter(highlights) };

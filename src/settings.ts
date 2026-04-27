@@ -85,6 +85,8 @@ export class KohiSettingTab extends PluginSettingTab {
 			["{{h.chapter}}", "Chapter name"],
 			["{{h.page}}", "Page number"],
 			["{{h.datetime}}", "Highlight timestamp"],
+			["{{h.color}}", "Highlight color"],
+			["{{h.drawer}}", "Highlight style"],
 		];
 		for (const [variable, desc] of rows) {
 			const tr = table.createEl("tr");
