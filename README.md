@@ -150,7 +150,7 @@ imported: {{imported}}
 
 ### Manual install
 
-1. Download `main.js` and `manifest.json` from the [latest release](https://github.com/chiahsien/obsidian-kohi/releases)
+1. Download `main.js`, `manifest.json`, and `styles.css` from the [latest release](https://github.com/chiahsien/obsidian-kohi/releases)
 2. Create a folder `<vault>/.obsidian/plugins/kohi/`
 3. Copy the downloaded files into that folder
 4. Restart Obsidian → Settings → Community plugins → Enable **KOHi**
@@ -164,7 +164,7 @@ npm install
 npm run build
 ```
 
-Then copy `main.js` and `manifest.json` into your vault's plugin folder as described above.
+Then copy `main.js`, `manifest.json`, and `styles.css` into your vault's plugin folder as described above.
 
 ## Development
 
@@ -188,6 +188,7 @@ npm install
 |---|---|
 | `npm run dev` | Start esbuild in watch mode |
 | `npm run build` | Type-check + production build |
+| `npm run lint` | Run ESLint checks |
 | `npm test` | Run tests once |
 | `npm run test:watch` | Run tests in watch mode |
 

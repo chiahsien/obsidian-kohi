@@ -44,28 +44,18 @@ class BookSelectModal extends Modal {
 			placeholder: "Search books...",
 			cls: "kohi-search-input",
 		});
-		searchInput.style.width = "100%";
-		searchInput.style.marginBottom = "8px";
 		searchInput.addEventListener("input", () => {
 			this.query = searchInput.value;
 			this.renderList();
 		});
 
 		this.listEl = contentEl.createDiv({ cls: "kohi-book-list" });
-		this.listEl.style.maxHeight = "300px";
-		this.listEl.style.overflowY = "auto";
-		this.listEl.style.marginBottom = "8px";
 
 		const footer = contentEl.createDiv({ cls: "kohi-footer" });
-		footer.style.display = "flex";
-		footer.style.justifyContent = "space-between";
-		footer.style.alignItems = "center";
 
 		this.countEl = footer.createSpan();
 
-		const buttons = footer.createDiv();
-		buttons.style.display = "flex";
-		buttons.style.gap = "6px";
+		const buttons = footer.createDiv({ cls: "kohi-footer-buttons" });
 
 		const selectAllBtn = buttons.createEl("button", {
 			text: "Select all",
@@ -123,23 +113,15 @@ class BookSelectModal extends Modal {
 
 		for (const b of filtered) {
 			const row = this.listEl.createDiv({ cls: "kohi-book-row" });
-			row.style.display = "flex";
-			row.style.alignItems = "center";
-			row.style.padding = "4px 0";
-			row.style.cursor = "pointer";
 
 			const checkbox = row.createEl("input", { type: "checkbox" });
 			checkbox.checked = this.selected.has(b);
-			checkbox.style.marginRight = "8px";
 
-			const label = row.createSpan();
+			const label = row.createSpan({ cls: "kohi-book-label" });
 			label.textContent = `${b.book.title} — ${b.book.author}`;
-			label.style.fontSize = "0.9em";
 
-			const hlCount = row.createSpan();
+			const hlCount = row.createSpan({ cls: "kohi-highlight-count" });
 			hlCount.textContent = ` (${b.highlights.length})`;
-			hlCount.style.color = "var(--text-muted)";
-			hlCount.style.fontSize = "0.8em";
 
 			row.addEventListener("click", (e) => {
 				if (e.target === checkbox) return;
@@ -164,12 +146,10 @@ class BookSelectModal extends Modal {
 		}
 
 		if (filtered.length === 0) {
-			const empty = this.listEl.createDiv();
+			const empty = this.listEl.createDiv({ cls: "kohi-empty-state" });
 			empty.textContent = this.query
 				? "No matching books"
 				: "No books found";
-			empty.style.padding = "8px 0";
-			empty.style.color = "var(--text-muted)";
 		}
 	}
 }

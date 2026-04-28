@@ -30,6 +30,7 @@ export class KohiSettingTab extends PluginSettingTab {
 			.setDesc("Path to your KOReader device")
 			.addText((text) =>
 				text
+					// eslint-disable-next-line obsidianmd/ui/sentence-case -- filesystem path
 					.setPlaceholder("/Volumes/KOBOeReader")
 					.setValue(this.plugin.settings.mountPath)
 					.onChange(async (value) => {
@@ -43,7 +44,7 @@ export class KohiSettingTab extends PluginSettingTab {
 			.setDesc("Vault folder for generated notes")
 			.addText((text) =>
 				text
-					.setPlaceholder("KOReader Highlights")
+					.setPlaceholder("KOReader highlights")
 					.setValue(this.plugin.settings.outputFolder)
 					.onChange(async (value) => {
 						this.plugin.settings.outputFolder = value;
@@ -81,25 +82,11 @@ export class KohiSettingTab extends PluginSettingTab {
 					}),
 			);
 
-		new Setting(containerEl)
-			.setName("Template presets")
-			.setDesc("Load a built-in template (overwrites current template)")
-			.addButton((btn) =>
-				btn.setButtonText("Grouped by chapter").onClick(async () => {
-					this.plugin.settings.noteTemplate = DEFAULT_TEMPLATE;
-					await this.plugin.saveSettings();
-					this.display();
-				}),
-			)
-			.addButton((btn) =>
-				btn.setButtonText("Flat list").onClick(async () => {
-					this.plugin.settings.noteTemplate = FLAT_TEMPLATE;
-					await this.plugin.saveSettings();
-					this.display();
-				}),
-			);
+		containerEl.createEl("hr");
 
-		const refEl = containerEl.createEl("details");
+		const refEl = containerEl.createEl("details", {
+			cls: "kohi-template-ref",
+		});
 		refEl.createEl("summary", { text: "Available template variables" });
 		const table = refEl.createEl("table");
 		const rows: [string, string][] = [
@@ -122,25 +109,38 @@ export class KohiSettingTab extends PluginSettingTab {
 		];
 		for (const [variable, desc] of rows) {
 			const tr = table.createEl("tr");
-			tr.createEl("td", { text: variable }).style.fontFamily =
-				"monospace";
+			tr.createEl("td", { text: variable, cls: "kohi-var-cell" });
 			tr.createEl("td", { text: desc });
 		}
-		const note = refEl.createEl("p");
-		note.style.fontSize = "0.85em";
-		note.style.color = "var(--text-muted)";
+		const note = refEl.createEl("p", { cls: "kohi-help-note" });
 		note.setText(
 			"Use highlights for a flat list, or chapters (each with .name and .highlights) for grouped output.",
 		);
+
+		new Setting(containerEl)
+			.setName("Template presets")
+			.setDesc("Load a built-in template (overwrites current template)")
+			.addButton((btn) =>
+				btn.setButtonText("Grouped by chapter").onClick(async () => {
+					this.plugin.settings.noteTemplate = DEFAULT_TEMPLATE;
+					await this.plugin.saveSettings();
+					this.display();
+				}),
+			)
+			.addButton((btn) =>
+				btn.setButtonText("Flat list").onClick(async () => {
+					this.plugin.settings.noteTemplate = FLAT_TEMPLATE;
+					await this.plugin.saveSettings();
+					this.display();
+				}),
+			);
 
 		new Setting(containerEl)
 			.setName("Note template")
 			.setDesc("Nunjucks template for note output")
 			.addTextArea((text) => {
 				text.inputEl.rows = 20;
-				text.inputEl.style.width = "100%";
-				text.inputEl.style.fontFamily = "monospace";
-				text.inputEl.style.fontSize = "0.8em";
+				text.inputEl.addClass("kohi-template-textarea");
 				text.setValue(this.plugin.settings.noteTemplate).onChange(
 					async (value) => {
 						this.plugin.settings.noteTemplate = value;

@@ -1,0 +1,67 @@
+/* Book select modal */
+.kohi-search-input {
+	width: 100%;
+	margin-bottom: 8px;
+}
+
+.kohi-book-list {
+	max-height: 300px;
+	overflow-y: auto;
+	margin-bottom: 8px;
+}
+
+.kohi-footer {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.kohi-footer-buttons {
+	display: flex;
+	gap: 6px;
+}
+
+.kohi-book-row {
+	display: flex;
+	align-items: center;
+	padding: 4px 0;
+	cursor: pointer;
+}
+
+.kohi-book-row input[type="checkbox"] {
+	margin-right: 8px;
+}
+
+.kohi-book-label {
+	font-size: 0.9em;
+}
+
+.kohi-highlight-count {
+	color: var(--text-muted);
+	font-size: 0.8em;
+}
+
+.kohi-empty-state {
+	padding: 8px 0;
+	color: var(--text-muted);
+}
+
+/* Settings tab */
+.kohi-template-ref {
+	font-size: var(--font-smallest);
+}
+
+.kohi-var-cell {
+	font-family: monospace;
+}
+
+.kohi-help-note {
+	font-size: 0.85em;
+	color: var(--text-muted);
+}
+
+.kohi-template-textarea {
+	width: 100%;
+	font-family: monospace;
+	font-size: 0.8em;
+}
