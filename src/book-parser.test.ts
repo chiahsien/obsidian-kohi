@@ -189,6 +189,125 @@ describe("parseBookData", () => {
 		expect(r.book.author).toBe("Unknown");
 	});
 
+	it("falls back to stats.title when doc_props.title missing (PDF without metadata)", () => {
+		const p = sdr(
+			"Handbook.pdf.sdr",
+			`return {
+			["doc_props"] = {},
+			["stats"] = { ["title"] = "The Startup CTO'S Handbook" },
+			["doc_path"] = "/mnt/onboard/Books/The Startup CTO'S Handbook.pdf",
+			["annotations"] = {},
+		}`,
+		);
+		const r = parseBookData(p)!;
+		expect(r.book.title).toBe("The Startup CTO'S Handbook");
+	});
+
+	it("falls back to doc_path filename when doc_props and stats both missing title", () => {
+		const p = sdr(
+			"MyBook.pdf.sdr",
+			`return {
+			["doc_props"] = {},
+			["doc_path"] = "/mnt/onboard/Books/MyBook.pdf",
+			["annotations"] = {},
+		}`,
+		);
+		const r = parseBookData(p)!;
+		expect(r.book.title).toBe("MyBook");
+	});
+
+	it("treats empty-string title as missing and falls through", () => {
+		const p = sdr(
+			"test.epub.sdr",
+			`return {
+			["doc_props"] = { ["title"] = "", ["authors"] = "" },
+			["stats"] = { ["title"] = "From Stats" },
+			["annotations"] = {},
+		}`,
+		);
+		const r = parseBookData(p)!;
+		expect(r.book.title).toBe("From Stats");
+		expect(r.book.author).toBe("Unknown");
+	});
+
+	it("empty custom_props.title falls through to doc_props.title", () => {
+		const p = sdr(
+			"test.epub.sdr",
+			`return {
+			["doc_props"] = { ["title"] = "Doc Title", ["authors"] = "A" },
+			["custom_props"] = { ["title"] = "" },
+			["annotations"] = {},
+		}`,
+		);
+		const r = parseBookData(p)!;
+		expect(r.book.title).toBe("Doc Title");
+	});
+
+	it("empty custom_props.authors falls through to doc_props.authors", () => {
+		const p = sdr(
+			"test.epub.sdr",
+			`return {
+			["doc_props"] = { ["title"] = "T", ["authors"] = "Doc Author" },
+			["custom_props"] = { ["authors"] = "" },
+			["annotations"] = {},
+		}`,
+		);
+		const r = parseBookData(p)!;
+		expect(r.book.author).toBe("Doc Author");
+	});
+
+	it("doc_path with multiple dots strips only the last extension", () => {
+		const p = sdr(
+			"test.sdr",
+			`return {
+			["doc_props"] = {},
+			["doc_path"] = "/mnt/onboard/Books/archive.tar.gz",
+			["annotations"] = {},
+		}`,
+		);
+		const r = parseBookData(p)!;
+		expect(r.book.title).toBe("archive.tar");
+	});
+
+	it("doc_path without extension uses full filename as title", () => {
+		const p = sdr(
+			"test.sdr",
+			`return {
+			["doc_props"] = {},
+			["doc_path"] = "/mnt/onboard/Books/README",
+			["annotations"] = {},
+		}`,
+		);
+		const r = parseBookData(p)!;
+		expect(r.book.title).toBe("README");
+	});
+
+	it("doc_path of '.' or '..' falls back to Unknown", () => {
+		const p = sdr(
+			"test.sdr",
+			`return {
+			["doc_props"] = {},
+			["doc_path"] = ".",
+			["annotations"] = {},
+		}`,
+		);
+		const r = parseBookData(p)!;
+		expect(r.book.title).toBe("Unknown");
+	});
+
+	it("numeric title in doc_props is preserved as string", () => {
+		const p = sdr(
+			"test.epub.sdr",
+			`return {
+			["doc_props"] = { ["title"] = 0, ["authors"] = false },
+			["annotations"] = {},
+		}`,
+		);
+		const r = parseBookData(p)!;
+		expect(r.book.title).toBe("0");
+		expect(r.book.author).toBe("false");
+	});
+
 	it("extracts description with raw HTML preserved", () => {
 		const p = sdr(
 			"test.epub.sdr",
