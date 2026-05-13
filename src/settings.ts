@@ -27,11 +27,10 @@ export class KohiSettingTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName("Mount path")
-			.setDesc("Path to your KOReader device")
+			.setDesc("Path to your KOReader device, e.g. /volumes/KOBOeReader")
 			.addText((text) =>
 				text
-					// eslint-disable-next-line obsidianmd/ui/sentence-case -- filesystem path
-					.setPlaceholder("/Volumes/KOBOeReader")
+					.setPlaceholder("/path/to/device")
 					.setValue(this.plugin.settings.mountPath)
 					.onChange(async (value) => {
 						this.plugin.settings.mountPath = value;
