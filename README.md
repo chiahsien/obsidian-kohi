@@ -138,7 +138,7 @@ imported: {{imported}}
 
 ## Installation
 
-### From community plugins (coming soon)
+### From community plugins
 
 1. Open Obsidian → Settings → Community plugins → Browse
 2. Search for **KOHi**
