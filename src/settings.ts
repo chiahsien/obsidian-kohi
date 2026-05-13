@@ -10,6 +10,8 @@ export const DEFAULT_SETTINGS: PluginSettings = {
 	noteTemplate: DEFAULT_TEMPLATE,
 	filenameTemplate: "{{title}}",
 	overwriteExisting: true,
+	skipImportedBooks: false,
+	importedBooks: [],
 };
 
 /** Plugin settings tab: mount path, output folder, and Nunjucks template editor. */
@@ -77,6 +79,20 @@ export class KohiSettingTab extends PluginSettingTab {
 					.setValue(this.plugin.settings.overwriteExisting)
 					.onChange(async (value) => {
 						this.plugin.settings.overwriteExisting = value;
+						await this.plugin.saveSettings();
+					}),
+			);
+
+		new Setting(containerEl)
+			.setName("Skip imported books")
+			.setDesc(
+				"When enabled, previously imported books are hidden from import. Turn off to re-import a book.",
+			)
+			.addToggle((toggle) =>
+				toggle
+					.setValue(this.plugin.settings.skipImportedBooks)
+					.onChange(async (value) => {
+						this.plugin.settings.skipImportedBooks = value;
 						await this.plugin.saveSettings();
 					}),
 			);

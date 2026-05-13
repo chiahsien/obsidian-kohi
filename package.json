@@ -1,6 +1,6 @@
 {
 	"name": "obsidian-kohi",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"description": "Import KOReader highlights into Obsidian",
 	"main": "main.js",
 	"type": "module",

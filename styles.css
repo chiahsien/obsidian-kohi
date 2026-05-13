@@ -46,6 +46,12 @@
 	color: var(--text-muted);
 }
 
+.kohi-skip-hint {
+	font-size: 0.85em;
+	color: var(--text-muted);
+	margin-bottom: 4px;
+}
+
 /* Settings tab */
 .kohi-template-ref {
 	font-size: var(--font-smallest);

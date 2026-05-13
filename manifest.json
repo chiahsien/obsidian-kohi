@@ -1,7 +1,7 @@
 {
 	"id": "kohi",
 	"name": "KOHi",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"minAppVersion": "1.7.2",
 	"description": "Import KOReader highlights and notes into your vault.",
 	"author": "Nelson",

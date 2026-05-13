@@ -29,6 +29,7 @@ KOHi scans your KOReader device for `.sdr` metadata directories, parses the Lua-
 | Output folder | Vault folder for generated notes | `KOReader Highlights` |
 | Filename template | Nunjucks template for note filenames (e.g. `{{author}} - {{title}}`) | `{{title}}` |
 | Overwrite existing | Whether to overwrite notes on re-import or skip them | On |
+| Skip imported books | Hide previously imported books from future imports. Turn off to re-import. | Off |
 | Note template | Nunjucks template for note output | See below |
 
 ## Template

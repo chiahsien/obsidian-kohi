@@ -68,4 +68,8 @@ export interface PluginSettings {
 	filenameTemplate: string;
 	/** Whether to overwrite existing notes on re-import. */
 	overwriteExisting: boolean;
+	/** Whether to skip books that have been previously imported. */
+	skipImportedBooks: boolean;
+	/** `.sdr` directory names of books that have been successfully imported. */
+	importedBooks: string[];
 }

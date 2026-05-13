@@ -42,12 +42,12 @@ Strict-ish: `noImplicitAny`, `strictNullChecks`, `noUncheckedIndexedAccess`, `us
 
 ## Build
 
-esbuild bundles `src/main.ts` -> `main.js`. Externals: `obsidian`, `electron`, all `@codemirror/*`, `@lezer/*`, Node builtins. Output format: CJS, target ES2018. `main.js` is gitignored.
+esbuild bundles `src/main.ts` -> `main.js`. Externals: `obsidian`, `electron`, all `@codemirror/*`, `@lezer/*`, Node builtins. `platform: "node"` to avoid bundling nunjucks browser code. Output format: CJS, target ES2018. `main.js` is gitignored.
 
 ## Conventions
 
 - Only runtime dependency besides `obsidian`: `nunjucks`.
 - `manifest.json` and `versions.json` are Obsidian plugin registry files — keep `version` in sync with `package.json`.
-- `data.json` is user settings (gitignored).
+- `data.json` is user settings (gitignored). Includes `importedBooks: string[]` — list of `.sdr` dirnames that have been successfully imported, used by the "skip imported books" feature.
 - `styles.css` is hand-written, no preprocessor. CSS classes prefixed `kohi-`.
 - Plugin ID: `kohi`.

@@ -10,14 +10,16 @@ import type { BookData } from "./types";
 export function openBookSelectModal(
 	app: App,
 	books: BookData[],
+	skippedImportedCount = 0,
 ): Promise<BookData[]> {
 	return new Promise((resolve) => {
-		new BookSelectModal(app, books, resolve).open();
+		new BookSelectModal(app, books, skippedImportedCount, resolve).open();
 	});
 }
 
 class BookSelectModal extends Modal {
 	private books: BookData[];
+	private skippedImportedCount: number;
 	private selected: Set<BookData> = new Set();
 	private resolve: (value: BookData[]) => void;
 	private query = "";
@@ -27,10 +29,12 @@ class BookSelectModal extends Modal {
 	constructor(
 		app: App,
 		books: BookData[],
+		skippedImportedCount: number,
 		resolve: (value: BookData[]) => void,
 	) {
 		super(app);
 		this.books = books;
+		this.skippedImportedCount = skippedImportedCount;
 		this.resolve = resolve;
 	}
 
@@ -48,6 +52,13 @@ class BookSelectModal extends Modal {
 			this.query = searchInput.value;
 			this.renderList();
 		});
+
+		if (this.skippedImportedCount > 0) {
+			contentEl.createDiv({
+				cls: "kohi-skip-hint",
+				text: `${this.skippedImportedCount} previously imported book${this.skippedImportedCount === 1 ? "" : "s"} hidden`,
+			});
+		}
 
 		this.listEl = contentEl.createDiv({ cls: "kohi-book-list" });
 
